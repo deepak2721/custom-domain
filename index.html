@@ -3,10 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
+    <title>Front Camera Photo Capture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        #logo {
+            max-width: 200px;
+            height: auto;
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        #video-preview {
+            width: 100%;
+            height: auto;
+        }
+
+        #capture-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            display: block;
+            margin: 10px auto;
+            padding: 5px;
+            width: 100%;
+            max-width: 300px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
+    <div id="header">
+        <img id="logo" src="your_logo_url_here" alt="Logo">
+    </div>
+
+    <div id="video-container">
+        <video id="video-preview" autoplay playsinline></video>
+    </div>
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="text" id="phone" placeholder="Enter your phone number">
+    <button id="capture-btn">Capture selfie</button>
+
+    <script>
+        // Get access to the camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+            .then(function(stream) {
+                var video = document.getElementById('video-preview');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.log("Error accessing the camera: " + err);
+            });
+
+        // Capture photo
+        document.getElementById('capture-btn').addEventListener('click', function() {
+            var name = document.getElementById('name').value;
+            var phone = document.getElementById('phone').value;
+
+            if (!name.trim() || !phone.trim()) {
+                alert("Please enter your name and phone number before capturing the photo.");
+                return;
+            }
+
+            var video = document.getElementById('video-preview');
+            var canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            var photoData = canvas.toDataURL('image/png');
+            // Send photoData, name, and phone to server or do something else with them
+            console.log("Name:", name);
+            console.log("Phone:", phone);
+            console.log("Photo captured:", photoData);
+        });
+    </script>
 </body>
 </html>
-
